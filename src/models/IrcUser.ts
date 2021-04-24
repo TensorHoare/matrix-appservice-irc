@@ -19,6 +19,8 @@ import { IrcServer } from "../irc/IrcServer";
 
 export class IrcUser extends RemoteUser {
 
+    public readonly isVirtual: boolean
+
     /**
      * Construct a new IRC user.
      * @constructor
@@ -31,17 +33,17 @@ export class IrcUser extends RemoteUser {
     constructor(
         public readonly server: IrcServer,
         public readonly nick: string,
-        public readonly isVirtual: boolean,
+        _isVirtual: boolean,
         public readonly password: string|null = null,
         username: string|null = null) {
         super(server.domain + "__@__" + nick, {
             domain: server.domain,
             nick: nick,
-            isVirtual: Boolean(isVirtual) || nick.startsWith("susecn_bot"), // XXX: hardcoded nickname prefix
+            isVirtual: nick.startsWith("susecn_bot") || Boolean(_isVirtual), // XXX: hardcoded nickname prefix
             password: password || null,
             username: username || null
         });
-        console.log(`${nick}: ${nick.startsWith("susecn_bot")}`)
+        this.isVirtual = nick.startsWith("susecn_bot") || Boolean(_isVirtual)
     }
 
     getUsername(): string {
