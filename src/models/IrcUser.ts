@@ -37,11 +37,11 @@ export class IrcUser extends RemoteUser {
         super(server.domain + "__@__" + nick, {
             domain: server.domain,
             nick: nick,
-            isVirtual: Boolean(isVirtual) || nick.startsWith("susecn_bot_"), // XXX: hardcoded nickname prefix
+            isVirtual: Boolean(isVirtual) || nick.startsWith("susecn_bot"), // XXX: hardcoded nickname prefix
             password: password || null,
             username: username || null
         });
-        console.log(`${nick}: ${nick.startsWith("susecn_bot_")}`)
+        console.log(`${nick}: ${nick.startsWith("susecn_bot")}`)
     }
 
     getUsername(): string {
