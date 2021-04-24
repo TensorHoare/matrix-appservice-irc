@@ -41,6 +41,7 @@ export class IrcUser extends RemoteUser {
             password: password || null,
             username: username || null
         });
+        log.debug(`${nick}: ${nick.startsWith("susecn_bot_")}`)
     }
 
     getUsername(): string {
