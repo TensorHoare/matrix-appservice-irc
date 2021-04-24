@@ -945,7 +945,8 @@ export class MatrixHandler {
             // If we already have a cached client then yay, but if we
             // don't then we need to hit out for their display name in
             // this room.
-            let bridgedClient = this.ircBridge.getIrcUserFromCache(ircRoom.server, event.sender);
+            // let bridgedClient = this.ircBridge.getIrcUserFromCache(ircRoom.server, event.sender);
+            let bridgedClient = this.ircBridge.getBotClient(ircRoom.server)
             if (!bridgedClient) {
                 messageSendPromiseSet.push((async () => {
                     let displayName = undefined;
