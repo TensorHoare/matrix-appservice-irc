@@ -512,8 +512,10 @@ export class IrcHandler {
     public async onMessage (req: BridgeRequest, server: IrcServer, fromUser: IrcUser,
                             channel: string, action: IrcAction) {
         this.incrementMetric("message");
+        console.log(${fromUser.nick}: ${fromUser.isVirtual})
         if (fromUser.isVirtual) {
             return BridgeRequestErr.ERR_VIRTUAL_USER;
+            console.log("continued after return");
         }
 
         const mxAction = MatrixAction.fromIrcAction(action);
