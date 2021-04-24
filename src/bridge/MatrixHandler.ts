@@ -946,8 +946,7 @@ export class MatrixHandler {
             // don't then we need to hit out for their display name in
             // this room.
             // let bridgedClient = this.ircBridge.getIrcUserFromCache(ircRoom.server, event.sender);
-            let bridgedClient = this.ircBridge.getBotClient(ircRoom.server)
-            if (!bridgedClient) {
+            //if (!bridgedClient) {
                 messageSendPromiseSet.push((async () => {
                     let displayName = undefined;
                     try {
@@ -960,18 +959,19 @@ export class MatrixHandler {
                         req.log.warn("Failed to get display name: %s", err);
                         // this is non-fatal, continue.
                     }
-                    bridgedClient = await this.ircBridge.getBridgedClient(
-                        ircRoom.server, event.sender, displayName
-                    );
+                    //bridgedClient = await this.ircBridge.getBridgedClient(
+                    //    ircRoom.server, event.sender, displayName
+                    //);
+                    let bridgedClient = await this.ircBridge.getBotClient(ircRoom.server);
                     await this.sendIrcAction(req, ircRoom, bridgedClient, ircAction, event);
                 })());
-            }
-            else {
+            //}
+            // else {
                 // push each request so we don't block processing other rooms
-                messageSendPromiseSet.push(
-                    this.sendIrcAction(req, ircRoom, bridgedClient, ircAction, event),
-                );
-            }
+            //    messageSendPromiseSet.push(
+            //        this.sendIrcAction(req, ircRoom, bridgedClient, ircAction, event),
+            //    );
+            //}
         });
         await Promise.all(fetchRoomsPromiseSet);
         Object.keys(otherMatrixRoomIdsToServers).forEach((roomId) => {
