@@ -34,6 +34,7 @@ export class IrcAction {
     }
 
     public static fromMatrixAction(matrixAction: MatrixAction): IrcAction|null {
+        let displayName = matrixAction.sender
         switch (matrixAction.type) {
             case "message":
             case "emote":
@@ -49,28 +50,28 @@ export class IrcAction {
                         throw Error("ircText is null");
                     }
                     // irc formatted text is the main text part
-                    return new IrcAction(matrixAction.type, ircText, matrixAction.ts)
+                    return new IrcAction(matrixAction.type, `[${displayName}] ${ircText}`, matrixAction.ts)
                 }
                 return new IrcAction(matrixAction.type, matrixAction.text, matrixAction.ts);
             case "image":
                 return new IrcAction(
-                    "emote", "uploaded an image: " + matrixAction.text, matrixAction.ts
+                    "emote", `${displayName} uploaded an image: ` + matrixAction.text, matrixAction.ts
                 );
             case "video":
                 return new IrcAction(
-                    "emote", "uploaded a video: " + matrixAction.text, matrixAction.ts
+                    "emote", `${displayName} uploaded a video: ` + matrixAction.text, matrixAction.ts
                 );
             case "audio":
                 return new IrcAction(
-                    "emote", "uploaded an audio file: " + matrixAction.text, matrixAction.ts
+                    "emote", `${displayName} uploaded an audio file: ` + matrixAction.text, matrixAction.ts
                 );
             case "file":
-                return new IrcAction("emote", "posted a file: " + matrixAction.text, matrixAction.ts);
+                return new IrcAction("emote", `${displayName} posted a file: ` + matrixAction.text, matrixAction.ts);
             case "topic":
                 if (matrixAction.text === null) {
                     break;
                 }
-                return new IrcAction(matrixAction.type, matrixAction.text, matrixAction.ts);
+                return new IrcAction(matrixAction.type, `${displayName} ${matrixAction.text}`, matrixAction.ts);
             default:
                 log.error("IrcAction.fromMatrixAction: Unknown action: %s", matrixAction.type);
         }

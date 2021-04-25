@@ -86,6 +86,7 @@ export class MatrixAction {
         public htmlText: string|null = null,
         public readonly ts: number = 0,
         public replyEvent?: string,
+        public sender: string = ""
     ) {
         if (!ACTION_TYPES.includes(type)) {
             throw new Error("Unknown MatrixAction type: " + type);
@@ -203,7 +204,7 @@ export class MatrixAction {
                 }
             }
         }
-        return new MatrixAction(type, text, htmlText, event.origin_server_ts);
+        return new MatrixAction(type, text, htmlText, event.origin_server_ts, undefined, event.sender);
     }
 
     public static fromIrcAction(ircAction: IrcAction) {
