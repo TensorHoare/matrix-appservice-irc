@@ -864,6 +864,7 @@ export class MatrixHandler {
         }
 
         const ircAction = IrcAction.fromMatrixAction(mxAction);
+        console.log(`ircAction text: ${ircAction?.text}`)
         if (ircAction === null) {
             req.log.info("IrcAction couldn't determine an action type.");
             return BridgeRequestErr.ERR_DROPPED;
