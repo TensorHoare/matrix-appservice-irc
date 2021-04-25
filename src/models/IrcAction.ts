@@ -35,7 +35,7 @@ export class IrcAction {
 
     public static fromMatrixAction(matrixAction: MatrixAction): IrcAction|null {
         console.log(`sender: ${matrixAction.sender}`)
-        let displayName = matrixAction.sender
+        let displayName = matrixAction.sender.split(":")[0]
         switch (matrixAction.type) {
             case "message":
             case "emote":
@@ -53,7 +53,7 @@ export class IrcAction {
                     // irc formatted text is the main text part
                     return new IrcAction(matrixAction.type, `[${displayName}] ${ircText}`, matrixAction.ts)
                 }
-                return new IrcAction(matrixAction.type, matrixAction.text, matrixAction.ts);
+                return new IrcAction(matrixAction.type, `[${displayName] matrixAction.text`, matrixAction.ts);
             case "image":
                 return new IrcAction(
                     "emote", `${displayName} uploaded an image: ` + matrixAction.text, matrixAction.ts

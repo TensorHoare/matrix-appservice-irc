@@ -204,7 +204,7 @@ export class MatrixAction {
                 }
             }
         }
-        console.log("event.sender: ${event.sender}")
+        console.log(`event.sender: ${event.sender}`)
         return new MatrixAction(type, text, htmlText, event.origin_server_ts, undefined, event.sender);
     }
 
