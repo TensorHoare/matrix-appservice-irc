@@ -53,7 +53,7 @@ export class IrcAction {
                     // irc formatted text is the main text part
                     return new IrcAction(matrixAction.type, `[${displayName}] ${ircText}`, matrixAction.ts)
                 }
-                return new IrcAction(matrixAction.type, `[${displayName}] matrixAction.text`, matrixAction.ts);
+                return new IrcAction(matrixAction.type, `[${displayName}] ${matrixAction.text}`, matrixAction.ts);
             case "image":
                 return new IrcAction(
                     "emote", `${displayName} uploaded an image: ` + matrixAction.text, matrixAction.ts
