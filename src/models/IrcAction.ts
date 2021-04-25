@@ -35,7 +35,8 @@ export class IrcAction {
 
     public static fromMatrixAction(matrixAction: MatrixAction): IrcAction|null {
         console.log(`sender: ${matrixAction.sender}`)
-        let displayName = matrixAction.sender.split(":")[0].substr(1)
+        // let displayName = matrixAction.sender.split(":")[0].substr(1)
+        let displayName = matrixAction.sender.getDisplayName()
         switch (matrixAction.type) {
             case "message":
             case "emote":

@@ -622,6 +622,11 @@ export class NeDBDataStore implements DataStore {
         return matrixUsers[0];
     }
 
+    public async getMatrixUserById(userId: string): Promise<MatrixUser|undefined> {
+        // not implemented
+        return undefined;
+    }
+
 
     public async getCountForUsernamePrefix(domain: string, usernamePrefix: string): Promise<number> {
         const domainKey = domain.replace(/\./g, "_");

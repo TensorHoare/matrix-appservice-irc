@@ -1205,8 +1205,7 @@ export class MatrixHandler {
                 rplName = eventContent.sender;
                 if (typeof(eventContent.content.body) !== "string") {
                     throw Error("'body' was not a string.");
-                }
-                const isReply = eventContent.content["m.relates_to"] &&
+                }get
                     eventContent.content["m.relates_to"]["m.in_reply_to"];
                 if (isReply) {
                     const sourceMatch = REPLY_REGEX.exec(eventContent.content.body);

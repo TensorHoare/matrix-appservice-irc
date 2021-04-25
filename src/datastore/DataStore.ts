@@ -163,6 +163,8 @@ export interface DataStore {
     removePass(userId: string, domain: string): Promise<void>;
 
     getMatrixUserByUsername(domain: string, username: string): Promise<MatrixUser|undefined>;
+    
+    getMatrixUserById(userId:string) : Promise<MatrixUser|undefined>;
 
     getCountForUsernamePrefix(domain: string, usernamePrefix: string): Promise<number>;
 

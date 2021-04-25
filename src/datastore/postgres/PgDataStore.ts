@@ -563,6 +563,17 @@ export class PgDataStore implements DataStore {
             [userId, domain]);
     }
 
+    public async getMatrixUserById(userId: string): Promise<MatrixUser|undefined> {
+        const res = await this.pgPool.query(
+            "SELECT data FROM matrix_users WHERE user_id = $1",
+            [userId]
+        );
+        if (res.rowCount === 0) {
+            return undefined;
+        }
+        return new MatrixUser(res.rows[0].user_id, res.rows[0].data);
+    }
+
     public async getMatrixUserByUsername(domain: string, username: string): Promise<MatrixUser|undefined> {
         // This will need a join
         const res = await this.pgPool.query(

@@ -936,10 +936,13 @@ export class IrcBridge {
                     return BridgeRequestErr.ERR_DROPPED;
                 }
             }
+
+            event.sender_obj = await this.getStore().getMatrixUserById(event.sender);
             // Cheeky crafting event into MatrixMessageEvent
             await this.matrixHandler.onMessage(request, event as unknown as MatrixMessageEvent);
         }
         else if (event.type === "m.room.topic" && event.state_key === "") {
+            event.sender_obj = await this.getStore().getMatrixUserById(event.sender);
             await this.matrixHandler.onMessage(request, event as unknown as MatrixMessageEvent);
         }
         else if (event.type === "m.room.member" && event.state_key) {
