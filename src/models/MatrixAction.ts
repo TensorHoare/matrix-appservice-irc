@@ -171,7 +171,7 @@ export class MatrixAction {
             if (event.content.msgtype === 'm.text' && event.content.body?.startsWith('!irc ')) {
                 // This might be a command
                 type = "command";
-                return new MatrixAction(type, text, null, event.origin_server_ts, event.event_id);
+                return new MatrixAction(type, text, null, event.origin_server_ts, event.event_id, event.sender);
             }
             if (event.content.format === "org.matrix.custom.html") {
                 htmlText = event.content.formatted_body;
