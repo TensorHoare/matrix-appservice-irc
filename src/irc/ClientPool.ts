@@ -187,59 +187,7 @@ export class ClientPool {
             return bridgedClient;
         }
 
-        if (await this.ircBridge.getStore().isUserDeactivated(userId)) {
-            throw Error("Cannot create bridged client - user has been deactivated");
-        }
-
-        const mxUser = new MatrixUser(userId);
-        if (displayName) {
-            mxUser.setDisplayName(displayName);
-        }
-
-        // check the database for stored config information for this irc client
-        // including username, custom nick, nickserv password, etc.
-        let ircClientConfig: IrcClientConfig;
-        const storedConfig = await this.store.getIrcClientConfig(userId, server.domain);
-        if (storedConfig) {
-            log.debug("Configuring IRC user from store => " + storedConfig);
-            ircClientConfig = storedConfig;
-        }
-        else {
-            ircClientConfig = IrcClientConfig.newConfig(
-                mxUser, server.domain
-            );
-        }
-
-        // recheck the cache: We just await'ed to check the client config. We may
-        // be racing with another request to getBridgedClient.
-        bridgedClient = this.getBridgedClientByUserId(server, userId);
-        if (bridgedClient) {
-            log.debug("Returning cached bridged client %s", userId);
-            return bridgedClient;
-        }
-
-        log.info(
-            "Creating virtual irc user with nick %s for %s (display name %s)",
-            ircClientConfig.getDesiredNick(), userId, displayName
-        );
-        try {
-            bridgedClient = this.createIrcClient(ircClientConfig, mxUser, false);
-            await bridgedClient.connect();
-            if (!storedConfig) {
-                await this.store.storeIrcClientConfig(ircClientConfig);
-            }
-            return bridgedClient;
-        }
-        catch (err) {
-            if (bridgedClient) {
-                // Remove client if we failed to connect!
-                this.removeBridgedClient(bridgedClient);
-            }
-            // If we failed to connect
-            log.error("Couldn't connect virtual user %s (%s) to %s : %s",
-                ircClientConfig.getDesiredNick(), userId, server.domain, JSON.stringify(err));
-            throw err;
-        }
+        throw Error("SUSECN: Bridged clients are disabled");
     }
 
     private createBridgedClient(ircClientConfig: IrcClientConfig, matrixUser: MatrixUser|null, isBot: boolean) {
