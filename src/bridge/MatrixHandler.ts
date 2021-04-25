@@ -854,7 +854,10 @@ export class MatrixHandler {
             if (servers[i].claimsUserId(event.sender)) {
                 req.log.debug("%s is a virtual user (claimed by %s)",
                     event.sender, servers[i].domain);
-                return BridgeRequestErr.ERR_VIRTUAL_USER;
+
+                // XXX: SUSECN hardcoded username prefix
+                if (event.sender.startsWith("@irc_"))
+                    return BridgeRequestErr.ERR_VIRTUAL_USER;
             }
         }
 
