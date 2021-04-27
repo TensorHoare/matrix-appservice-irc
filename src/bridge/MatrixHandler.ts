@@ -1181,8 +1181,7 @@ export class MatrixHandler {
         await this.ircBridge.getMatrixUser(ircUser);
     }
 
-    private async textForReplyEvent(event: MatrixMessageEvent, replyEventId: string, ircRoom: IrcRoom):
-    Promise<{formatted: string; reply: string}|null> {
+    private async textForReplyEvent(event: MatrixMessageEvent, replyEventId: string, ircRoom: IrcRoom): Promise<{formatted: string; reply: string}|null> {
         const REPLY_REGEX = /> <(.*?)>(.*?)\n\n(.*)/;
         const REPLY_NAME_MAX_LENGTH = 12;
         const eventId = replyEventId;
@@ -1256,7 +1255,7 @@ export class MatrixHandler {
                 rplSource = rplSource + "...";
             }
             // Wrap in formatting
-            rplSource = ` "${rplSource}"`;
+            rplSource = `"${rplSource}"`;
         }
         else {
             // Don't show a source because we couldn't format one.
