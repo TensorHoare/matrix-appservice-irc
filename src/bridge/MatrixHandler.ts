@@ -1208,7 +1208,7 @@ export class MatrixHandler {
                 // Try to fetch display name
                 try {
                     const res = await this.ircBridge.getAppServiceBridge().getIntent().getStateEvent(
-                        event.room_id, "m.room.member", event.sender
+                        eventContent.room_id, "m.room.member", eventContent.sender
                     );
                     console.log(`res: ${res}`)
                     rplName = res.displayname;
@@ -1229,6 +1229,7 @@ export class MatrixHandler {
                     rplSource = eventContent.content.body;
                 }
                 rplSource = rplSource.substring(0, REPLY_SOURCE_MAX_LENGTH);
+                rplSource = `[${rplName}] ${rplSource}`
                 this.eventCache.set(eventId, {sender: rplName, body: rplSource});
             }
             catch (err) {
@@ -1277,7 +1278,7 @@ export class MatrixHandler {
         }
 
         return {
-            formatted: `<[${rplName}] ${rplSource}> ${rplText}`,
+            formatted: `<${rplSource}> ${rplText}`,
             reply: rplText,
         };
     }
