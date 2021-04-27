@@ -938,14 +938,10 @@ export class IrcBridge {
             }
 
             // Cheeky crafting event into MatrixMessageEvent
-            let matrix_event = event as unknown as MatrixMessageEvent
-            matrix_event.sender_obj = await this.getStore().getMatrixUserById(event.sender);
-            await this.matrixHandler.onMessage(request, matrix_event);
+            await this.matrixHandler.onMessage(request, event as unknown as MatrixMessageEvent);
         }
         else if (event.type === "m.room.topic" && event.state_key === "") {
-            let matrix_event = event as unknown as MatrixMessageEvent
-            matrix_event.sender_obj = await this.getStore().getMatrixUserById(event.sender);
-            await this.matrixHandler.onMessage(request, matrix_event);
+            await this.matrixHandler.onMessage(request, event as unknown as MatrixMessageEvent);
         }
         else if (event.type === "m.room.member" && event.state_key) {
             if (!event.content || !event.content.membership) {

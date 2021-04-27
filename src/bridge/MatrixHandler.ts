@@ -963,6 +963,7 @@ export class MatrixHandler {
                         req.log.warn("Failed to get display name: %s", err);
                         // this is non-fatal, continue.
                     }
+                    event.sender_displayName = displayName
                     //bridgedClient = await this.ircBridge.getBridgedClient(
                     //    ircRoom.server, event.sender, displayName
                     //);
@@ -1011,7 +1012,7 @@ export class MatrixHandler {
             const eventId = event.content["m.relates_to"]["m.in_reply_to"].event_id;
             const reply = await this.textForReplyEvent(event, eventId, ircRoom);
             if (reply !== null) {
-                ircAction.text = reply.formatted;
+                ircAction.text = `${ircAction.displayName}${reply.formatted}`;
                 cacheBody = reply.reply;
             }
         }
@@ -1203,7 +1204,17 @@ export class MatrixHandler {
                     event.room_id, eventId
                 );
                 rplName = eventContent.sender;
-                if (typeof(eventContent.content.body) !== "string") {
+                // Try to fetch display name
+                try {
+                    const res = await this.ircBridge.getAppServiceBridge().getIntent().getStateEvent(
+                        event.room_id, "m.room.member", event.sender
+                    );
+                    rplName = res.displayname;
+                }
+                catch (err) {
+                    // Non-fatal. Continue with username.
+                }
+                if (typeof (eventContent.content.body) !== "string") {
                     throw Error("'body' was not a string.");
                 }
                 const isReply = eventContent.content["m.relates_to"] &&
@@ -1264,7 +1275,7 @@ export class MatrixHandler {
         }
 
         return {
-            formatted: `<${rplName}${rplSource}> ${rplText}`,
+            formatted: `<[${rplName}] ${rplSource}> ${rplText}`,
             reply: rplText,
         };
     }

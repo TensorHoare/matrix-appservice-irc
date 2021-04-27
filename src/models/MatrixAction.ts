@@ -49,7 +49,7 @@ const MAX_MATCHES = 5;
 export interface MatrixMessageEvent {
     type: string;
     sender: string;
-    sender_obj?: MatrixUser
+    sender_displayName?: string
     room_id: string;
     event_id: string;
     content: {
@@ -87,7 +87,8 @@ export class MatrixAction {
         public htmlText: string|null = null,
         public readonly ts: number = 0,
         public replyEvent?: string,
-        public sender?: MatrixUser
+        public sender: string = "",
+        public sender_displayName? : string
     ) {
         if (!ACTION_TYPES.includes(type)) {
             throw new Error("Unknown MatrixAction type: " + type);
@@ -172,7 +173,7 @@ export class MatrixAction {
             if (event.content.msgtype === 'm.text' && event.content.body?.startsWith('!irc ')) {
                 // This might be a command
                 type = "command";
-                return new MatrixAction(type, text, null, event.origin_server_ts, event.event_id, event.sender_obj);
+                return new MatrixAction(type, text, null, event.origin_server_ts, event.event_id, event.sender, event.sender_displayName);
             }
             if (event.content.format === "org.matrix.custom.html") {
                 htmlText = event.content.formatted_body;
@@ -206,7 +207,7 @@ export class MatrixAction {
             }
         }
         console.log(`event.sender: ${event.sender}`)
-        return new MatrixAction(type, text, htmlText, event.origin_server_ts, undefined, event.sender_obj);
+        return new MatrixAction(type, text, htmlText, event.origin_server_ts, undefined, event.sender, event.sender_displayName);
     }
 
     public static fromIrcAction(ircAction: IrcAction) {
