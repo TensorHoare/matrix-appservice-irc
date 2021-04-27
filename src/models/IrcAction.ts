@@ -28,22 +28,23 @@ export class IrcAction {
         public readonly type: IrcActionType,
         public text: string,
         public readonly ts: number = 0,
-        public readonly displayName: string = ""
+        public readonly sender: string|null = null,
+        public displayName: string|null = null
         ) {
         if (!ACTION_TYPES.includes(type)) {
             throw new Error("Unknown IrcAction type: " + type);
         }
     }
 
-    public static fromMatrixAction(matrixAction: MatrixAction): IrcAction|null {
-        console.log(`sender: ${matrixAction.sender}`)
-        let displayName = ""
-        if (matrixAction.sender_displayName) {
-            displayName = `[${matrixAction.sender_displayName}] `
-        } else if (matrixAction.sender != "") {
-            let username = matrixAction.sender.split(":")[0].substr(1)
-            displayName = `[${username}] `
+    public getDisplayName(): string|null {
+        if (this.displayName !== null) {
+            return this.displayName
+        } else {
+            return this.sender?.split(":")[0].substr(1) || null
         }
+    }
+
+    public static fromMatrixAction(matrixAction: MatrixAction): IrcAction|null {
         switch (matrixAction.type) {
             case "message":
             case "emote":
@@ -59,28 +60,28 @@ export class IrcAction {
                         throw Error("ircText is null");
                     }
                     // irc formatted text is the main text part
-                    return new IrcAction(matrixAction.type, `${displayName}${ircText}`, matrixAction.ts, displayName)
+                    return new IrcAction(matrixAction.type, ircText, matrixAction.ts, matrixAction.sender)
                 }
-                return new IrcAction(matrixAction.type, `${displayName}${matrixAction.text}`, matrixAction.ts, displayName);
+                return new IrcAction(matrixAction.type, matrixAction.text, matrixAction.ts, matrixAction.sender);
             case "image":
                 return new IrcAction(
-                    "emote", `${displayName} uploaded an image: ` + matrixAction.text, matrixAction.ts, displayName
+                    "emote", "uploaded an image: " + matrixAction.text, matrixAction.ts, matrixAction.sender
                 );
             case "video":
                 return new IrcAction(
-                    "emote", `${displayName} uploaded a video: ` + matrixAction.text, matrixAction.ts, displayName
+                    "emote", "uploaded a video: " + matrixAction.text, matrixAction.ts, matrixAction.sender
                 );
             case "audio":
                 return new IrcAction(
-                    "emote", `${displayName} uploaded an audio file: ` + matrixAction.text, matrixAction.ts, displayName
+                    "emote", "uploaded an audio file: " + matrixAction.text, matrixAction.ts, matrixAction.sender
                 );
             case "file":
-                return new IrcAction("emote", `${displayName} posted a file: ` + matrixAction.text, matrixAction.ts, displayName);
+                return new IrcAction("emote", "posted a file: " + matrixAction.text, matrixAction.ts, matrixAction.sender);
             case "topic":
                 if (matrixAction.text === null) {
                     break;
                 }
-                return new IrcAction(matrixAction.type, `${displayName} ${matrixAction.text}`, matrixAction.ts, displayName);
+                return new IrcAction(matrixAction.type, matrixAction.text, matrixAction.ts, matrixAction.sender);
             default:
                 log.error("IrcAction.fromMatrixAction: Unknown action: %s", matrixAction.type);
         }

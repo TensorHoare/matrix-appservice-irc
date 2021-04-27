@@ -963,7 +963,7 @@ export class MatrixHandler {
                         req.log.warn("Failed to get display name: %s", err);
                         // this is non-fatal, continue.
                     }
-                    event.sender_displayName = displayName
+                    ircAction.displayName = displayName || null
                     //bridgedClient = await this.ircBridge.getBridgedClient(
                     //    ircRoom.server, event.sender, displayName
                     //);
@@ -1001,6 +1001,7 @@ export class MatrixHandler {
 
     private async sendIrcAction(req: BridgeRequest, ircRoom: IrcRoom, ircClient: BridgedClient, ircAction: IrcAction,
                                 event: MatrixMessageEvent) {
+        ircAction.text = `[${ircAction.getDisplayName()}] ${ircAction.text}`
         // Send the action as is if it is not a text message
         if (event.content.msgtype !== "m.text" || !event.content.body) {
             await this.ircBridge.sendIrcAction(ircRoom, ircClient, ircAction);
@@ -1012,7 +1013,7 @@ export class MatrixHandler {
             const eventId = event.content["m.relates_to"]["m.in_reply_to"].event_id;
             const reply = await this.textForReplyEvent(event, eventId, ircRoom);
             if (reply !== null) {
-                ircAction.text = `${ircAction.displayName}${reply.formatted}`;
+                ircAction.text = `[${ircAction.getDisplayName()}] ${reply.formatted}`;
                 cacheBody = reply.reply;
             }
         }
@@ -1209,6 +1210,7 @@ export class MatrixHandler {
                     const res = await this.ircBridge.getAppServiceBridge().getIntent().getStateEvent(
                         event.room_id, "m.room.member", event.sender
                     );
+                    console.log(`res: ${res}`)
                     rplName = res.displayname;
                 }
                 catch (err) {
